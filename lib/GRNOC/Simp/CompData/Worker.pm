@@ -231,19 +231,22 @@ sub _scan_cb{
 
   foreach my $host (@$hosts){
       foreach my $oid (keys %{$data->{$host}}){
+
+	  # strip out the wildcard part of the oid
+	  $oid =~ s/$oid_pattern//;
+	  my $base_value = $data->{$host}{$oid}{'value'};
+
+	  #--- return only those entries matching specified values
 	  if(defined $vals){
-	      #--- return only those entries matching specified values
 	      foreach my $val (@$vals){
-		  if($data->{$host}{$oid}{'value'} eq $val){
-		      $oid =~ s/$oid_pattern//;
-		      $results->{$host}{$id}{$val} = $oid;
+		  if($base_value =~ /$val/){
+		      $results->{$host}{$id}{$base_value} = $oid;
 		  }
 	      }
-	  }else{
-	      #--- no val specified, return all
-	      my $val = $data->{$host}{$oid}{'value'};
-	      $oid =~ s/$oid_pattern//;
-	      $results->{$host}{$id}{$val} = $oid;
+	  }
+	  #--- no val specified, return all
+	  else{	      
+	      $results->{$host}{$id}{$base_value} = $oid;
 	  }
       }
   }
