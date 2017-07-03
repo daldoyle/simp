@@ -232,9 +232,10 @@ sub _scan_cb{
   foreach my $host (@$hosts){
       foreach my $oid (keys %{$data->{$host}}){
 
+	  my $base_value = $data->{$host}{$oid}{'value'};
+
 	  # strip out the wildcard part of the oid
 	  $oid =~ s/$oid_pattern//;
-	  my $base_value = $data->{$host}{$oid}{'value'};
 
 	  #--- return only those entries matching specified values
 	  if(defined $vals){
